@@ -27,6 +27,8 @@ from decouple import config
 
 USERNAME = config('USER')
 PASS = config('PASS')
+
+Do not forget to add this .env file to .gitignore for preventing it from getting uploaded to github by mistake.
 '''
 
 
