@@ -24,38 +24,39 @@ def faceCropper(image):
     # Detecting the faces
     # It will give the coordinates of the face
     faces = model.detectMultiScale(grayScaled,1.3, 5)
-
     if faces == ():
-        return None
+        return len(faces), None
     else:
         for (x1, y1, x2, y2) in faces:
             croppedFace = grayScaled[y1:y1+y2, x1:x1+x2]
-            return croppedFace
+            return len(faces), croppedFace
 
 # Function for clicing images
-def imageClicker(capture, count):
+def imageClicker(dest, capture, count):
     status, image = capture.read()
     cv2.imshow("Cheeze!", image)
-    cropped = faceCropper(image)
+    numberOfFaces, cropped = faceCropper(image)
     if cropped is None:
         print("No face detected...[Skipped]")
+    elif numberOfFaces == 2:
+        print("Two faces detected...[Skipped]")
     else:
         # Resize the image    
         face = cv2.resize(cropped, (200, 200))
     
         # Save the images to the path
-        destination = './data/' + str(count) + '.jpg'
+        destination = dest + str(count) + '.jpg'
         cv2.imwrite(destination, face)
-        print("{} saved".format(destination))
+        print("{} saved".format(destination), end='\r')
         time.sleep(0.1)
 
-def main():
+def initiateClick(dest):
     numberOfImages = int(input("Enter the number of images you want to click: "))
     print("PRESS ENTER TO INITIATE...", end = "")
     input()
     capture = cv2.VideoCapture(0)
     for count in range(int(numberOfImages)):
-        imageClicker(capture, count)
+        imageClicker(dest, capture, count)
         if cv2.waitKey(1) == 13 or count == numberOfImages-1:
             print("{} photos were clicked and saved to ./data/".format(numberOfImages))
             break

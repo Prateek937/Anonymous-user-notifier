@@ -2,9 +2,8 @@ import cv2
 import numpy as np
 from os import listdir
 from os.path import isfile, join
+import subprocess as sb
 import time
-# Import the image collector program
-import ImageCollector
 
 # This function will return the training and labels
 def trainAndlabelsData(images, sourcePath):
@@ -22,11 +21,7 @@ def trainAndlabelsData(images, sourcePath):
     
     return trainingData, labels
 
-def train():
-    # Click the images using the ImageCollector.py
-    ImageCollector.main()
-
-    sourcePath = "./data/"
+def train(sourcePath):
     imageFiles = listdir(sourcePath)
 
     # Creating dataset with labels for training
@@ -45,7 +40,8 @@ def train():
 
     # Train the model
     print("Intiating training of model...")
-    faceRecognizer.train(np.array(trainingData), np.array(labels))
+    error = faceRecognizer.train(np.asarray(trainingData), np.asarray(labels, dtype='int32'))
 
     print("Training successful!")
 
+    return faceRecognizer
